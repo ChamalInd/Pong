@@ -37,19 +37,31 @@ function love.load()
     gameState = 'start'
 
     -- setting fonts 
-    largeFont = love.graphics.newFont('font.ttf', 32)
-    mediumFont = love.graphics.newFont('font.ttf', 16)
-    smallFont = love.graphics.newFont('font.ttf', 8)
+    largeFont = love.graphics.newFont('fonts/font.ttf', 32)
+    mediumFont = love.graphics.newFont('fonts/font.ttf', 16)
+    smallFont = love.graphics.newFont('fonts/font.ttf', 8)
+
+    -- setting sound 
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('audio/paddle-collision.wav', 'static'), 
+        ['wall_hit'] = love.audio.newSource('audio/wall-collision.wav', 'static'), 
+        ['paddle_miss'] = love.audio.newSource('audio/lose.wav', 'static')
+    }
 
     -- setting the window 
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
-        resizable = false,
-        vsync = true,
-        fullscreen = false
+        resizable = true,
+        fullscreen = false,
+        vsync = true
     })
     love.window.setTitle('Pong')
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, { upscale = 'normal'})
+end
+
+
+function love.resize(w, h)
+    push:resize(w, h)
 end
 
 
@@ -82,6 +94,8 @@ function love.update(dt)
             ball.dx = -ball.dx * 1.03 -- to make the ball go faster
             ball.x = player1.x + 5 -- width of ball + 1
 
+            sounds['paddle_hit']:play()
+
             if ball.dy < 0 then
                 ball.dy = -math.random(10, 150)
             else
@@ -98,23 +112,31 @@ function love.update(dt)
             else
                 ball.dy = math.random(10, 150)
             end
+
+            sounds['paddle_hit']:play()
         end
         
         -- ball bouncing off of walls 
         if ball.y <= 0 then
             ball.y = 0
             ball.dy = -ball.dy
+
+            sounds['wall_hit']:play()
         end
 
         if ball.y >= VIRTUAL_HEIGHT - 4 then
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
+
+            sounds['wall_hit']:play()
         end
 
         -- update scores 
         if ball.x <= 0 then
             servingPlayer = 1
             player2Score = player2Score + 1
+
+            sounds['paddle_miss']:play()
             
             if player2Score == 10 then
                 victoryPlayer = 2
@@ -128,7 +150,8 @@ function love.update(dt)
         if ball.x >= VIRTUAL_WIDTH then
             servingPlayer = 2
             player1Score = player1Score + 1
-            gameState = 'start'
+
+            sounds['paddle_miss']:play()
 
             if player1Score == 10 then
                 victoryPlayer = 1
