@@ -44,6 +44,7 @@ function love.load()
         vsync = true,
         fullscreen = false
     })
+    love.window.setTitle('Pong')
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, { upscale = 'normal'})
 end
@@ -67,6 +68,43 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
+    if gameState == 'play' then
+        -- ball bouncing off of paddles 
+        if ball:collide(player1) then
+            ball.dx = -ball.dx * 1.03 -- to make the ball go faster
+            ball.x = player1.x + 5 -- width of ball + 1
+
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+
+        if ball:collide(player2) then
+            ball.dx = -ball.dx * 1.03 -- to make the ball go faster
+            ball.x = player2.x - 4 -- just width of ball
+
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 150)
+            end
+        end
+        
+        -- ball bouncing off of walls 
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+        end
+
+        if ball.y >= VIRTUAL_HEIGHT - 4 then
+            ball.y = VIRTUAL_HEIGHT - 4
+            ball.dy = -ball.dy
+        end
+    end
+
+
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
@@ -112,5 +150,15 @@ function love.draw()
     -- ball
     ball:render()
 
+    displayFPS()
+
     push:finish()
+end
+
+
+function displayFPS()
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(0, 1, 0, 1)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 5)
+    love.graphics.setColor(1, 1, 1, 1)
 end
