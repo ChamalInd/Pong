@@ -4,6 +4,8 @@ WINDOW_HEIGHT = 720
 VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
+PADDLE_SPEED = 200
+
 push = require 'push'
 
 function love.load()
@@ -13,6 +15,10 @@ function love.load()
     -- player scores
     playerOneScore = 0
     playerTwoScore = 0
+
+    -- paddle positions 
+    playerOneY = 10
+    playerTwoY = VIRTUAL_HEIGHT - 40
 
     -- setting fonts 
     largeFont = love.graphics.newFont('font.ttf', 32)
@@ -37,6 +43,20 @@ function love.keypressed(key)
     end 
 end
 
+function love.update(dt)
+    if love.keyboard.isDown('w') then
+        playerOneY = playerOneY + (-PADDLE_SPEED * dt)
+    elseif love.keyboard.isDown('s') then
+        playerOneY = playerOneY + (PADDLE_SPEED * dt)
+    end
+
+    if love.keyboard.isDown('up') then
+        playerTwoY = playerTwoY + (-PADDLE_SPEED * dt)
+    elseif love.keyboard.isDown('down') then
+        playerTwoY = playerTwoY + (PADDLE_SPEED * dt)
+    end
+end
+
 
 function love.draw()
     push:start()
@@ -51,9 +71,9 @@ function love.draw()
     love.graphics.printf(tostring(playerTwoScore), VIRTUAL_WIDTH / 2, 32, VIRTUAL_WIDTH / 2, 'center')
 
     -- paddle one  
-    love.graphics.rectangle('fill', 10, 10, 5, 30)
+    love.graphics.rectangle('fill', 10, playerOneY, 5, 30)
     -- paddle two  
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 40, 5, 30)
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, playerTwoY, 5, 30)
     -- ball
     love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
     push:finish()
