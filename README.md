@@ -3,11 +3,11 @@
 ### Project Overview 
 A Simple Pong game implemented using LÖVE and written in Lua. Game represents the retro pong game that allows the user to engage in playing both Single and Multi player modes.
 
-![Home Page](ss/image0.png)
+<img width="1392" height="860" alt="image0" src="https://github.com/user-attachments/assets/c4c0cc28-6f1c-4a2b-8433-37443058c5c9" />
 
 In Single player mode the player get to play with a automated player. While two players can engage in Multi player mode.
 
-![Single Player](ss/image1.png)
+<img width="1392" height="860" alt="image1" src="https://github.com/user-attachments/assets/38c50690-373a-466a-8dbc-2074b936c6bb" />
 
 ### Features
 - Two different gaming modes
